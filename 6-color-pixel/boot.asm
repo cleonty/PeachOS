@@ -23,21 +23,8 @@ step2:
   mov si, message
   call print
   
-  mov ah, 0x00
-  mov al, 0x13
-  int 0x10
-  
-  mov ah, 0xc
-  mov al, 0xd
-  xor bh, bh
-  mov cx, 0x40
-  mov dx, 0x40
-loop:
-  int 0x10
-  dec dx
-  dec cx
-  test dx, dx
-  jnz loop
+  call color
+
   jmp $
 
 print:
@@ -54,6 +41,24 @@ print:
 print_char:
   mov ah, 0eh
   int 0x10
+  ret
+
+color:
+  mov ah, 0x00
+  mov al, 0x13
+  int 0x10
+  
+  mov ah, 0xc
+  mov al, 0xd
+  xor bh, bh
+  mov cx, 0x40
+  mov dx, 0x40
+_loop:
+  int 0x10
+  dec dx
+  dec cx
+  test dx, dx
+  jnz _loop
   ret
 
 message: db 'Hello world!', 0
