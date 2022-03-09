@@ -1,19 +1,18 @@
-boot.iso:	boot.bin
+./bin/boot.iso:	./bin/boot.bin
 	mkisofs -R -b $^ -no-emul-boot -boot-load-size 4 -o $@ .
 
-boot.bin:	boot.asm message.txt
+./bin/boot.bin:	./src/boot/boot.asm
 	nasm -f bin -o $@ $<
-	dd if=./message.txt >> ./boot.bin
-	dd if=/dev/zero bs=512 count=1 >> ./boot.bin
+
 	
-disasm:	boot.bin
+disasm:	./bin/boot.bin
 	ndisasm $^
 
-run:	boot.bin
-	qemu-system-x86_64 -hda ./boot.bin
+run:	./bin/boot.bin
+	qemu-system-x86_64 -hda ./bin/boot.bin
 
 clean:	
-	rm -f *.bin *.iso
+	rm -f ./bin/*.bin ./bin/*.iso ./buid/*.o
 
 gdb:	
 	gdb target remote | qemu-system-x86_64 -hda ./boot.bin -S -gdb stdio
